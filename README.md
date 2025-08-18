@@ -1,100 +1,103 @@
 ![صورة للتطبيق](https://github.com/abdurrhmansaeed/ColorRemover/blob/main/images/ColorRemover_ar.png?raw=true)
-![App Screenshot](https://github.com/abdurrhmansaeed/ColorRemover/blob/main/images/ColorRemover_en.png?raw=true)
-# ColorRemover v1.0
 
-A professional Qt-based application for intelligent color removal from images with bilingual support.
+# برنامج إزالة الألوان الإصدار 1.0 ColorRemover v1.0
 
-## ✨ Features
+تطبيق احترافي مبني على مكتبة Qt لإزالة الألوان من الصور مع دعم ثنائي اللغة.
 
-- **🖼️ Smart Image Processing**: Load and process various image formats (PNG, JPG, GIF, etc.)
-- **🎨 Precise Color Selection**: Advanced color picker with tolerance adjustment
-- **👁️ Real-time Preview**: Instant preview of color removal results
-- **🔍 Zoom Controls**: Zoom in/out, fit to window, and reset zoom functionality
-- **🌍 Bilingual Interface**: Full support for English and Arabic languages
-- **💾 Export Options**: Save processed images in multiple formats
-- **🖥️ Modern UI**: Clean, intuitive interface with professional design
+## ✨ الميزات
 
-## 🚀 Quick Start
+- **🖼️ معالجة صور ذكية**: تحميل ومعالجة صيغ الصور المختلفة (PNG، JPG، GIF، وغيرها)
+- **🎨 اختيار لون دقيق**: أداة اختيار لون متقدمة مع إمكانية ضبط الحساسية
+- **👁️ معاينة فورية**: معاينة لحظية لنتائج إزالة اللون
+- **🔍 أدوات التكبير**: تكبير وتصغير الصورة، ملائمة للنافذة، وإعادة ضبط التكبير
+- **🌍 واجهة ثنائية اللغة**: دعم كامل للغتين العربية والإنجليزية
+- **💾 خيارات تصدير**: حفظ الصور المعالجة بعدة صيغ
+- **🖥️ واجهة حديثة**: تصميم احترافي ونظيف وسهل الاستخدام
 
-1. **Open Image**: Click the folder icon or use File → Open Image
-2. **Select Color**: Use the color picker tool to choose the color to remove
-3. **Adjust Tolerance**: Fine-tune the selection sensitivity
-4. **Process**: Click "Remove Color" to apply changes
-5. **Save**: Export your edited image using File → Save Edited Image
+## 🚀 البدء السريع
 
-## 🛠️ Building from Source
+1. **فتح صورة**: اضغط على أيقونة المجلد أو من قائمة ملف → فتح صورة
+2. **اختيار اللون**: استخدم أداة اختيار اللون لتحديد اللون المراد إزالته
+3. **ضبط الحساسية**: عدل حساسية اختيار اللون حسب الحاجة
+4. **المعالجة**: اضغط على زر "إزالة اللون" لتطبيق التغييرات
+5. **الحفظ**: صدر الصورة المعدلة من قائمة ملف → حفظ الصورة المعدلة
 
-### Prerequisites
-- Qt 6.9.1 or later
-- MinGW compiler (Windows) or equivalent
-- Git (for cloning)
+## 🛠️ البناء من المصدر
 
-### Build Instructions
+### المتطلبات الأساسية
+-مكتبة Qt 6.9.1 أو أحدث
+- مترجم MinGW (ويندوز) أو ما يعادله
+- Git (للاستنساخ)
+
+### تعليمات البناء
 
 ```bash
-# Clone the repository
+# استنساخ المستودع
 git clone [repository-url]
 cd remove_color_from_img
 
-# Build the project
+# بناء المشروع
 qmake ColorRemover.pro
 mingw32-make
 
-# Run the application
+# تشغيل التطبيق
 cd release
 ColorRemover.exe
 ```
 
-## 🌐 Language Support
+## 🌐 دعم اللغات
 
-The application automatically detects your system language and supports:
-- **English** (en) - Default interface language
-- **العربية** (ar) - Full Arabic interface with RTL support
+يكتشف التطبيق تلقائيًا لغة النظام ويدعم:
+- **العربية** (ar) - واجهة عربية كاملة مع دعم اتجاه الكتابة من اليمين
+- **English** (en) - 
 
-Switch languages anytime via: **Language Menu → Select Language**
 
-## 📋 System Requirements
+يمكنك تغيير اللغة في أي وقت من خلال: **قائمة اللغة → اختيار اللغة**
 
-- **Operating System**: Windows 10 or later
-- **Memory**: 512 MB RAM minimum
-- **Storage**: 50 MB free space
-- **Graphics**: Any modern graphics card with Qt support
+## 📋 متطلبات النظام
 
-## 📁 Project Structure
+- **نظام التشغيل**: ويندوز 10 أو أحدث
+- **الذاكرة**: 512 ميجابايت رام على الأقل
+- **المساحة التخزينية**: 50 ميجابايت مساحة فارغة
+- **البطاقة الرسومية**: أي بطاقة رسومية حديثة تدعم Qt
+
+## 📋 نسخة لينكس توزيعة دبيان وأراك متوفرة
+
+## 📁 هيكل المشروع
 
 ```
 ColorRemover/
-├── main.cpp              # Application entry point
-├── mainwindow.cpp/.h     # Main application window
-├── ColorRemover.pro      # Qt project file
-├── resources.qrc         # Qt resource file
-├── icons/               # Application icons
-├── translations/        # Language files (JSON)
-└── ColorRemover_Windows_Portable/  # Portable distribution
+├── main.cpp              # نقطة دخول التطبيق
+├── mainwindow.cpp/.h     # نافذة التطبيق الرئسية
+├── ColorRemover.pro      # ملف مشروع Qt
+├── resources.qrc         # ملف الموارد في Qt
+├── icons/               # أيقونات التطبيق
+├── translations/        # ملفات اللغات (JSON)
+└── ColorRemover_Windows_Portable/  # نسخة محمولة من التطبيق
 ```
 
-## 🎯 Version 1.0 Features
+## 🎯 ميزات النسخة 1.0
 
-- ✅ Complete bilingual interface (English/Arabic)
-- ✅ Professional icon and branding
-- ✅ Optimized performance and memory usage
-- ✅ Comprehensive image format support
-- ✅ Advanced color removal algorithms
-- ✅ Modern, responsive UI design
+- ✅ واجهة ثنائية اللغة كاملة (إنجليزي/عربي)
+- ✅ أيقونة وواجهة احترافية
+- ✅ أداء واستخدام ذاكرة محسن
+- ✅ دعم شامل لصيغ الصور
+- ✅ خوارزميات متقدمة لإزالة الألوان
+- ✅ تصميم عصري وواجهة سريعة الاستجابة
 
-## 📄 License
+## 📄 الترخيص
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+هذا المشروع مرخص تحت رخصة MIT - راجع ملف LICENSE للمزيد من التفاصيل.
 
-## 🤝 Contributing
+## 🤝 المساهمة
 
-Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
+المساهمات مرحب بها! يمكنك إرسال طلبات السحب أو فتح قضايا للأخطاء أو طلب ميزات جديدة.
 
-## 👨‍💻 Developer
+## 👨‍💻 المطور
 
-**Developer**: Abdurrhman Saeed  
-**Built with**: GitHub Copilot assistance
+**المطور**: عبدالرحمن بن ناصر السعيد
+**أُنشئ بمساعدة**: GitHub Copilot
 
 ---
 
-**ColorRemover v1.0** - Professional Image Color Removal Tool
+**ColorRemover v1.0** - أداة احترافية لإزالة الألوان من الصور
