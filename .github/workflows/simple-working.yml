@@ -1,0 +1,122 @@
+name: Simple Working Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  ubuntu-working:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Qt
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qt6-base-dev qt6-tools-dev libgl1-mesa-dev build-essential
+        
+    - name: Build with Ubuntu method
+      run: |
+        echo "=== Ubuntu Build (Working Method) ==="
+        qmake6 ColorRemover.pro CONFIG+=release
+        make -j$(nproc)
+        
+        # Check result
+        if [ -f "release/ColorRemover" ]; then
+          echo "✅ Ubuntu build successful"
+          ls -la release/
+        else
+          echo "❌ Ubuntu build failed"
+          exit 1
+        fi
+
+  windows-simple:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.5.3'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_mingw'
+        
+    - name: Build without resources (Windows)
+      shell: cmd
+      run: |
+        echo === Creating resource-free build ===
+        echo QT += core widgets > temp.pro
+        echo CONFIG += c++17 >> temp.pro
+        echo TARGET = ColorRemover >> temp.pro
+        echo TEMPLATE = app >> temp.pro
+        echo DESTDIR = release >> temp.pro
+        echo SOURCES += main.cpp mainwindow.cpp >> temp.pro
+        echo HEADERS += mainwindow.h >> temp.pro
+        
+        echo === Testing simple build ===
+        qmake temp.pro "CONFIG+=release"
+        if exist "Makefile" (
+          echo Makefile generated
+          mingw32-make -j2
+          if exist "release\ColorRemover.exe" (
+            echo ✅ Windows simple build successful
+            dir release\
+          ) else (
+            echo ❌ Windows simple build failed
+            exit /b 1
+          )
+        ) else (
+          echo ❌ Makefile generation failed
+          exit /b 1
+        )
+
+  macos-simple:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.5.3'
+        host: 'mac'
+        target: 'desktop'
+        
+    - name: Build without resources (macOS)
+      run: |
+        echo "=== Creating resource-free build ==="
+        cat > temp.pro << 'EOF'
+        QT += core widgets
+        CONFIG += c++17
+        TARGET = ColorRemover
+        TEMPLATE = app
+        DESTDIR = release
+        SOURCES += main.cpp mainwindow.cpp
+        HEADERS += mainwindow.h
+        EOF
+        
+        echo "=== Testing simple build ==="
+        qmake temp.pro CONFIG+=release
+        if [ -f "Makefile" ]; then
+          echo "Makefile generated"
+          make -j$(sysctl -n hw.ncpu)
+          if [ -f "release/ColorRemover" ]; then
+            echo "✅ macOS simple build successful"
+            ls -la release/
+          else
+            echo "❌ macOS simple build failed"
+            exit 1
+          fi
+        else
+          echo "❌ Makefile generation failed"
+          exit 1
+        fi
