@@ -1,0 +1,49 @@
+# Maintainer: Abdurrhman Saeed <a1.alsaeed@hotmail.com>
+pkgname=colorremover
+pkgver=1.0.1
+pkgrel=1
+pkgdesc="Remove specific colors from images - Qt6 GUI application"
+arch=('x86_64')
+url="https://github.com/abdurrhmansaeed/ColorRemover"
+license=('MIT')
+depends=('qt6-base' 'gcc-libs' 'glibc')
+makedepends=('cmake' 'qt6-tools' 'git')
+source=("git+https://github.com/abdurrhmansaeed/ColorRemover.git#tag=v${pkgver}")
+sha256sums=('SKIP')
+
+build() {
+    cd "${srcdir}/ColorRemover"
+    
+    # Create build directory
+    mkdir -p build
+    cd build
+    
+    # Configure with qmake
+    qmake6 ../ColorRemover.pro CONFIG+=release
+    
+    # Build
+    make -j$(nproc)
+}
+
+package() {
+    cd "${srcdir}/ColorRemover/build"
+    
+    # Install binary
+    install -Dm755 release/ColorRemover "${pkgdir}/usr/bin/colorremover"
+    
+    # Install desktop file
+    install -Dm644 ../debian/usr/share/applications/colorremover.desktop \
+        "${pkgdir}/usr/share/applications/colorremover.desktop"
+    
+    # Install icon
+    install -Dm644 ../icons/app_icon.png \
+        "${pkgdir}/usr/share/pixmaps/colorremover.png"
+    
+    # Install license
+    install -Dm644 ../LICENSE \
+        "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    
+    # Install documentation
+    install -Dm644 ../README.md \
+        "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+}

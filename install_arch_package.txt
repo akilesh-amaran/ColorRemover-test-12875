@@ -1,0 +1,14 @@
+# Install ColorRemover on Arch Linux
+
+## Method 1: Install directly
+sudo pacman -U colorremover-1.0.1-1-x86_64.pkg.tar.zst
+
+## Method 2: Add to local repository
+sudo cp colorremover-1.0.1-1-x86_64.pkg.tar.zst /var/cache/pacman/pkg/
+sudo pacman -S colorremover
+
+## Usage
+colorremover
+
+## Uninstall
+sudo pacman -R colorremover
