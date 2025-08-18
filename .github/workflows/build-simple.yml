@@ -25,8 +25,25 @@ jobs:
     - name: Build ColorRemover
       shell: cmd
       run: |
+        echo === Building ColorRemover ===
         qmake ColorRemover_simple.pro "CONFIG+=release"
+        echo === Generated Makefile ===
+        if exist "Makefile" (
+          echo Makefile found, proceeding with build
+        ) else (
+          echo ERROR: Makefile not generated
+          exit /b 1
+        )
         mingw32-make -j2
+        echo === Checking build output ===
+        if exist "release\ColorRemover.exe" (
+          echo Build successful - executable found
+          dir release\
+        ) else (
+          echo Build failed - no executable found
+          if exist "release" dir release\
+          exit /b 1
+        )
         
     - name: Deploy Qt dependencies
       shell: cmd
