@@ -1,0 +1,173 @@
+name: Build and Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.5.3'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_mingw'
+        cache: true
+        
+    - name: Build ColorRemover
+      shell: cmd
+      run: |
+        qmake ColorRemover.pro "CONFIG+=release"
+        mingw32-make -j2
+        
+    - name: Deploy Qt dependencies
+      shell: cmd
+      run: |
+        cd release
+        windeployqt ColorRemover.exe --release --no-system-d3d-compiler --no-opengl-sw
+        
+    - name: Copy additional files
+      shell: cmd
+      run: |
+        if not exist "release\translations" mkdir release\translations
+        copy translations\*.json release\translations\ 2>nul || echo "No JSON files to copy"
+        copy README.md release\ 2>nul || echo "README not found"
+        copy LICENSE release\ 2>nul || echo "LICENSE not found"
+        
+    - name: Create portable package
+      shell: cmd
+      run: |
+        mkdir ColorRemover_v1.0_Windows_Portable
+        xcopy release\*.* ColorRemover_v1.0_Windows_Portable\ /E /Y /I
+        
+    - name: Create ZIP package
+      run: |
+        Compress-Archive -Path ColorRemover_v1.0_Windows_Portable -DestinationPath ColorRemover_v1.0_Windows_Portable.zip
+        
+    - name: Upload Windows Package
+      uses: actions/upload-artifact@v4
+      with:
+        name: ColorRemover-Windows-Portable
+        path: ColorRemover_v1.0_Windows_Portable.zip
+
+  build-linux:
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.5.3'
+        host: 'linux'
+        target: 'desktop'
+        cache: true
+        
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential libgl1-mesa-dev
+        
+    - name: Build ColorRemover
+      run: |
+        mkdir -p build_linux
+        cd build_linux
+        qmake ../ColorRemover.pro CONFIG+=release
+        make -j$(nproc)
+        
+    - name: Create portable package
+      run: |
+        cd build_linux
+        mkdir -p ColorRemover_v1.0_Linux_Portable
+        cp ColorRemover ColorRemover_v1.0_Linux_Portable/ || echo "Binary not found"
+        cp -r ../translations ColorRemover_v1.0_Linux_Portable/ 2>/dev/null || echo "Translations not found"
+        cp ../README.md ColorRemover_v1.0_Linux_Portable/ 2>/dev/null || echo "README not found"
+        cp ../LICENSE ColorRemover_v1.0_Linux_Portable/ 2>/dev/null || echo "LICENSE not found"
+        
+        # Create run script
+        cat > ColorRemover_v1.0_Linux_Portable/run_ColorRemover.sh << 'EOF'
+        #!/bin/bash
+        cd "$(dirname "$0")"
+        ./ColorRemover
+        EOF
+        chmod +x ColorRemover_v1.0_Linux_Portable/run_ColorRemover.sh
+        
+        # Create tar.gz package
+        tar -czf ColorRemover_v1.0_Linux_Portable.tar.gz ColorRemover_v1.0_Linux_Portable/
+        
+    - name: Upload Linux Package
+      uses: actions/upload-artifact@v4
+      with:
+        name: ColorRemover-Linux-Portable
+        path: build_linux/ColorRemover_v1.0_Linux_Portable.tar.gz
+
+  create-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-windows, build-linux]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ColorRemover-Windows-Portable/ColorRemover_v1.0_Windows_Portable.zip
+          ColorRemover-Linux-Portable/ColorRemover_v1.0_Linux_Portable.tar.gz
+        body: |
+          # ColorRemover v1.0 - Professional Image Color Removal Tool
+          
+          ## 🎯 Download Options
+          
+          ### 🪟 Windows Users
+          - **📦 Portable Package**: `ColorRemover_v1.0_Windows_Portable.zip`
+            - No installation required
+            - Extract and run anywhere
+            - Includes all Qt dependencies
+          
+          ### 🐧 Linux Users
+          - **📦 Portable Package**: `ColorRemover_v1.0_Linux_Portable.tar.gz`
+            - Universal Linux binary
+            - Includes run script
+            - Works on most distributions
+          
+          ## ✨ Features
+          - Smart image color removal with tolerance adjustment
+          - Bilingual interface (English/Arabic) with RTL support
+          - Professional Qt-based GUI with modern design
+          - Multiple image format support (PNG, JPG, GIF, BMP, TIFF)
+          - Real-time preview and zoom controls
+          - Export options with transparency support
+          
+          ## 🔗 Repository
+          **GitHub**: https://github.com/abdurrhmansaeed/ColorRemover
+          
+          ## 📋 System Requirements
+          - **Windows**: 10/11 (64-bit), 512 MB RAM, 50 MB storage
+          - **Linux**: Modern distribution with Qt 6 support, 512 MB RAM, 50 MB storage
+          
+          ## 👨‍💻 Developer
+          **Developer**: Abdurrhman Saeed  
+          **Built with**: GitHub Copilot assistance
+          
+          ---
+          **Developer**: Abdurrhman Saeed | **License**: MIT License
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

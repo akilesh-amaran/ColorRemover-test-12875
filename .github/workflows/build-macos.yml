@@ -19,15 +19,17 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
-        version: '6.9.1'
+        version: '6.5.3'
         host: 'windows'
         target: 'desktop'
         arch: 'win64_mingw'
+        cache: true
         
     - name: Build ColorRemover
+      shell: cmd
       run: |
         qmake ColorRemover.pro CONFIG+=release
-        mingw32-make
+        mingw32-make -j2
         
     - name: Deploy Qt dependencies
       run: |
@@ -72,9 +74,10 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
-        version: '6.9.1'
+        version: '6.5.3'
         host: 'mac'
         target: 'desktop'
+        cache: true
         
     - name: Build ColorRemover
       run: |
@@ -176,11 +179,11 @@ jobs:
     - name: Install Qt and dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y qt6-base-dev qt6-tools-dev libgl1-mesa-dev
+        sudo apt-get install -y qt6-base-dev qt6-tools-dev libgl1-mesa-dev build-essential
         
     - name: Build ColorRemover
       run: |
-        mkdir build_linux
+        mkdir -p build_linux
         cd build_linux
         qmake6 ../ColorRemover.pro CONFIG+=release
         make -j$(nproc)

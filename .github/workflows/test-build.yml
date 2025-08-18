@@ -1,0 +1,47 @@
+name: Test Build
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: List project files
+      run: |
+        echo "=== Project Structure ==="
+        ls -la
+        echo "=== Source Files ==="
+        find . -name "*.cpp" -o -name "*.h" -o -name "*.pro" | head -20
+        echo "=== Qt Project File ==="
+        if [ -f "ColorRemover.pro" ]; then
+          cat ColorRemover.pro
+        else
+          echo "ColorRemover.pro not found"
+        fi
+        
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.5.3'
+        host: 'linux'
+        target: 'desktop'
+        cache: true
+        
+    - name: Test qmake
+      run: |
+        echo "=== Testing qmake ==="
+        qmake --version
+        qmake ColorRemover.pro CONFIG+=release
+        echo "=== Generated Makefile ==="
+        if [ -f "Makefile" ]; then
+          head -20 Makefile
+        else
+          echo "Makefile not generated"
+        fi
