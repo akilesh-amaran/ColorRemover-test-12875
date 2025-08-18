@@ -9,6 +9,7 @@ on:
 jobs:
   test-compile:
     strategy:
+      fail-fast: false  # Don't cancel other jobs if one fails
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         
@@ -28,28 +29,36 @@ jobs:
       if: runner.os != 'Linux'
       uses: jurplel/install-qt-action@v3
       with:
-        version: '6.9.1'
+        version: '6.5.3'  # Use stable version
         host: ${{ runner.os == 'Windows' && 'windows' || 'mac' }}
         target: 'desktop'
         arch: ${{ runner.os == 'Windows' && 'win64_mingw' || '' }}
+        cache: true
         
     - name: Test compilation (Linux)
       if: runner.os == 'Linux'
       run: |
-        qmake6 ColorRemover.pro CONFIG+=release
+        echo "=== Linux Build ==="
+        qmake6 ColorRemover_simple.pro CONFIG+=release
         make -j$(nproc)
+        echo "=== Linux Build Complete ==="
         
     - name: Test compilation (Windows)
       if: runner.os == 'Windows'
+      shell: cmd
       run: |
-        qmake ColorRemover.pro CONFIG+=release
-        mingw32-make
+        echo === Windows Build ===
+        qmake ColorRemover_simple.pro "CONFIG+=release"
+        mingw32-make -j2
+        echo === Windows Build Complete ===
         
     - name: Test compilation (macOS)
       if: runner.os == 'macOS'
       run: |
-        qmake ColorRemover.pro CONFIG+=release
+        echo "=== macOS Build ==="
+        qmake ColorRemover_simple.pro CONFIG+=release
         make -j$(sysctl -n hw.ncpu)
+        echo "=== macOS Build Complete ==="
         
     - name: Verify executable
       run: |

@@ -8,8 +8,12 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
-jobs:
-  build-windows:
+jobs:    - name: Build ColorRemover
+      run: |
+        mkdir -p build_linux
+        cd build_linux
+        qmake ../ColorRemover_simple.pro CONFIG+=release
+        make -j$(nproc)ild-windows:
     runs-on: windows-latest
     
     steps:
@@ -81,7 +85,7 @@ jobs:
         
     - name: Build ColorRemover
       run: |
-        qmake ColorRemover.pro CONFIG+=release
+        qmake ColorRemover_simple.pro CONFIG+=release
         make -j$(sysctl -n hw.ncpu)
         
     - name: Deploy Qt dependencies
