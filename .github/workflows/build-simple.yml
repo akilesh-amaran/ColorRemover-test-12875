@@ -25,7 +25,7 @@ jobs:
     - name: Build ColorRemover
       shell: cmd
       run: |
-        qmake ColorRemover.pro "CONFIG+=release"
+        qmake ColorRemover_simple.pro "CONFIG+=release"
         mingw32-make -j2
         
     - name: Deploy Qt dependencies
@@ -82,7 +82,7 @@ jobs:
       run: |
         mkdir -p build_linux
         cd build_linux
-        qmake ../ColorRemover.pro CONFIG+=release
+        qmake ../ColorRemover_simple.pro CONFIG+=release
         make -j$(nproc)
         
     - name: Create portable package

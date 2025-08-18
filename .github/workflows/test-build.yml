@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-build:
+  test-build-ubuntu:
     runs-on: ubuntu-latest
     
     steps:
@@ -19,7 +19,7 @@ jobs:
         ls -la
         echo "=== Source Files ==="
         find . -name "*.cpp" -o -name "*.h" -o -name "*.pro" | head -20
-        echo "=== Qt Project File ==="
+        echo "=== Qt Project File Content ==="
         if [ -f "ColorRemover.pro" ]; then
           cat ColorRemover.pro
         else
@@ -38,10 +38,35 @@ jobs:
       run: |
         echo "=== Testing qmake ==="
         qmake --version
-        qmake ColorRemover.pro CONFIG+=release
+        echo "=== Running qmake with simple project ==="
+        qmake ColorRemover_simple.pro CONFIG+=release
         echo "=== Generated Makefile ==="
         if [ -f "Makefile" ]; then
-          head -20 Makefile
+          echo "Makefile created successfully"
+          head -30 Makefile
         else
-          echo "Makefile not generated"
+          echo "ERROR: Makefile not generated"
+          echo "Trying original project file..."
+          qmake ColorRemover.pro CONFIG+=release
+          if [ -f "Makefile" ]; then
+            echo "Original project file worked"
+          else
+            echo "Both project files failed"
+            exit 1
+          fi
+        fi
+        
+    - name: Test compilation
+      run: |
+        echo "=== Attempting compilation ==="
+        make -j2 2>&1 | tee build.log
+        echo "=== Build status ==="
+        if [ -f "release/ColorRemover" ]; then
+          echo "✅ Build successful"
+          ls -la release/
+        else
+          echo "❌ Build failed"
+          echo "=== Build log ==="
+          cat build.log
+          exit 1
         fi
