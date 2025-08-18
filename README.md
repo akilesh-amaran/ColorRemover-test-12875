@@ -1,3 +1,5 @@
+![صورة للتطبيق](https://github.com/abdurrhmansaeed/ColorRemover/blob/main/images/ColorRemover_ar.png?raw=true)
+![App Screenshot](https://github.com/abdurrhmansaeed/ColorRemover/blob/main/images/ColorRemover_en.png?raw=true)
 # ColorRemover v1.0
 
 A professional Qt-based application for intelligent color removal from images with bilingual support.
