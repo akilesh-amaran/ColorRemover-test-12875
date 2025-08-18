@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Color Remover
+Comment=Remove specific colors from images
+Exec=ColorRemover
+Icon=colorremover
+Terminal=false
+Categories=Graphics;Photography;
+MimeType=image/jpeg;image/png;image/bmp;image/tiff;image/gif;

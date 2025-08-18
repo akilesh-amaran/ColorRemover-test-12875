@@ -78,7 +78,9 @@ win32 {
 }
 
 # Ensure proper linking
-LIBS += -luser32 -lgdi32 -lshell32 -lkernel32
+win32 {
+    LIBS += -luser32 -lgdi32 -lshell32 -lkernel32
+}
 
 # Include paths for headers
 INCLUDEPATH += $$PWD

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo "=== ColorRemover Release Upload Helper ==="
+echo "Package created: colorremover_1.0.0_amd64.deb ($(du -h colorremover_1.0.0_amd64.deb | cut -f1))"
+echo ""
+echo "To upload to GitHub releases:"
+echo ""
+echo "Method 1 - Web Interface:"
+echo "1. Go to: https://github.com/abdurrhmansaeed/ColorRemover/releases"
+echo "2. Click 'Create a new release' or edit existing release"
+echo "3. Upload: colorremover_1.0.0_amd64.deb"
+echo ""
+echo "Method 2 - GitHub CLI:"
+echo "1. Authenticate: gh auth login"
+echo "2. Upload: gh release upload v1.0.0 colorremover_1.0.0_amd64.deb"
+echo ""
+echo "Package ready for upload!"

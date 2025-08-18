@@ -1,0 +1,12 @@
+Package: colorremover
+Version: 1.0.0
+Architecture: amd64
+Maintainer: ImageEditor <maintainer@example.com>
+Depends: libqt6widgets6, libqt6gui6, libqt6core6, libc6, libgcc-s1, libstdc++6
+Section: graphics
+Priority: optional
+Homepage: https://github.com/yourusername/ColorRemover
+Description: Remove specific colors from images
+ Color Remover is a Qt6-based application that allows users to
+ remove specific colors from images. It provides an intuitive
+ interface for color selection and image processing.
