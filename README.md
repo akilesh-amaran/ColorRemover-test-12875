@@ -88,6 +88,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
 
+## 👨‍💻 Developer
+
+**Developer**: Abdurrhman Saeed  
+**Built with**: GitHub Copilot assistance
+
 ---
 
 **ColorRemover v1.0** - Professional Image Color Removal Tool
