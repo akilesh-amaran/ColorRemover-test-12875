@@ -5,6 +5,16 @@ for English - [English](README.en.md)
 
 تطبيق احترافي مبني على مكتبة Qt لإزالة الألوان من الصور مع دعم ثنائي اللغة.
 
+
+## 🖥️ روابط التحميل
+
+- [تثبيت كامل لويندوز](https://github.com/abdurrhmansaeed/ColorRemover/releases/download/v1.0.0/ColorRemover_v1.0_Full_Setup.exe)
+
+- [نسخة محمولة لويندوز-مجلد مضغوط](https://github.com/abdurrhmansaeed/ColorRemover/releases/download/v1.0.0/ColorRemover_v1.0_Windows_Portable.zip)
+
+- [نسخة لينكس دبيان- يوبنتو ](https://github.com/abdurrhmansaeed/ColorRemover/releases/download/v1.0.1/colorremover_1.0.0_amd64.deb)
+
+
 ## ✨ الميزات
 
 - **🖼️ معالجة صور ذكية**: تحميل ومعالجة صيغ الصور المختلفة (PNG، JPG، GIF، وغيرها)
