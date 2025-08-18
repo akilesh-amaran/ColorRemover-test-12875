@@ -39,7 +39,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         echo "=== Linux Build ==="
-        qmake6 ColorRemover_simple.pro CONFIG+=release
+        qmake6 ColorRemover.pro CONFIG+=release
         make -j$(nproc)
         echo "=== Linux Build Complete ==="
         
@@ -48,7 +48,7 @@ jobs:
       shell: cmd
       run: |
         echo === Windows Build ===
-        qmake ColorRemover_simple.pro "CONFIG+=release"
+        qmake ColorRemover.pro "CONFIG+=release"
         mingw32-make -j2
         echo === Windows Build Complete ===
         
@@ -56,7 +56,7 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         echo "=== macOS Build ==="
-        qmake ColorRemover_simple.pro CONFIG+=release
+        qmake ColorRemover.pro CONFIG+=release
         make -j$(sysctl -n hw.ncpu)
         echo "=== macOS Build Complete ==="
         

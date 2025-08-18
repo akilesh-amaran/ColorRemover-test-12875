@@ -1,7 +1,5 @@
 #include <windows.h>
 
-IDI_ICON1	ICON	"E:\\0programes\\qt\\remove_color_from_img\\icons\\app_icon.ico"
-
 VS_VERSION_INFO VERSIONINFO
 	FILEVERSION 1,0,0,0
 	PRODUCTVERSION 1,0,0,0
@@ -19,12 +17,12 @@ VS_VERSION_INFO VERSIONINFO
 		BEGIN
 			BLOCK "040904b0"
 			BEGIN
-				VALUE "CompanyName", "ImageEditor\0"
-				VALUE "FileDescription", "Remove specific colors from images\0"
+				VALUE "CompanyName", "\0"
+				VALUE "FileDescription", "\0"
 				VALUE "FileVersion", "1.0.0.0\0"
-				VALUE "LegalCopyright", "Copyright (c) 2025\0"
+				VALUE "LegalCopyright", "\0"
 				VALUE "OriginalFilename", "ColorRemover.exe\0"
-				VALUE "ProductName", "Color Remover\0"
+				VALUE "ProductName", "ColorRemover\0"
 				VALUE "ProductVersion", "1.0.0.0\0"
 				VALUE "InternalName", "\0"
 				VALUE "Comments", "\0"

@@ -1,0 +1,52 @@
+name: Step by Step Build Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-step-by-step:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.5.3'
+        host: 'linux'
+        target: 'desktop'
+        cache: true
+        
+    - name: Test 1 - Minimal project without resources
+      run: |
+        echo "=== Test 1: Minimal project ==="
+        qmake ColorRemover_minimal.pro CONFIG+=release
+        make -j2 2>&1 || echo "Minimal project failed"
+        
+    - name: Test 2 - Simple project with resources  
+      run: |
+        echo "=== Test 2: Simple project with resources ==="
+        make clean || true
+        rm -f Makefile
+        qmake ColorRemover_simple.pro CONFIG+=release
+        make -j2 2>&1 || echo "Simple project failed"
+        
+    - name: Test 3 - Check if resources exist
+      run: |
+        echo "=== Test 3: Resource files check ==="
+        [ -f "resources.qrc" ] && echo "resources.qrc exists" || echo "resources.qrc missing"
+        [ -f "ColorRemover_resource.rc" ] && echo "ColorRemover_resource.rc exists" || echo "ColorRemover_resource.rc missing"
+        if [ -f "resources.qrc" ]; then
+          echo "=== Resource file content ==="
+          cat resources.qrc | head -20
+        fi
+        
+    - name: Test 4 - Local build test
+      run: |
+        echo "=== Test 4: Local build (working version) ==="
+        make clean || true
+        rm -f Makefile
+        qmake ColorRemover.pro CONFIG+=release
+        make -j2 2>&1
