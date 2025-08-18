@@ -1,0 +1,13 @@
+# Placeholder icon files
+# These would typically be 16x16 or 24x24 PNG images
+# Replace these placeholder files with actual PNG icons
+
+# Icons needed:
+# - open.png (folder icon)
+# - save.png (disk icon)  
+# - clear.png (trash/clear icon)
+# - zoom_in.png (magnifying glass with +)
+# - zoom_out.png (magnifying glass with -)
+# - zoom_reset.png (magnifying glass with 1:1)
+# - fit_window.png (fit to screen icon)
+# - trash.png (delete icon)

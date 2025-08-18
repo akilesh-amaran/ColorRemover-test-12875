@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/app_icon.png</file>
+        <file>icons/app_icon.ico</file>
+        <file>icons/open.png</file>
+        <file>icons/save.png</file>
+        <file>icons/clear.png</file>
+        <file>icons/zoom_in.png</file>
+        <file>icons/zoom_out.png</file>
+        <file>icons/zoom_reset.png</file>
+        <file>icons/fit_window.png</file>
+        <file>icons/trash.png</file>
+        <file>translations/app_ar.qm</file>
+        <file>translations/app_en.qm</file>
+    </qresource>
+</RCC>

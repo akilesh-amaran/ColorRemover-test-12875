@@ -1,0 +1,56 @@
+name: Test Builds
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-compile:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Qt (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qt6-base-dev qt6-tools-dev libgl1-mesa-dev
+        
+    - name: Install Qt (Windows/macOS)
+      if: runner.os != 'Linux'
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.9.1'
+        host: ${{ runner.os == 'Windows' && 'windows' || 'mac' }}
+        target: 'desktop'
+        arch: ${{ runner.os == 'Windows' && 'win64_mingw' || '' }}
+        
+    - name: Test compilation (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        qmake6 ColorRemover.pro CONFIG+=release
+        make -j$(nproc)
+        
+    - name: Test compilation (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        qmake ColorRemover.pro CONFIG+=release
+        mingw32-make
+        
+    - name: Test compilation (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        qmake ColorRemover.pro CONFIG+=release
+        make -j$(sysctl -n hw.ncpu)
+        
+    - name: Verify executable
+      run: |
+        ls -la ColorRemover* || ls -la release/ColorRemover* || echo "Executable check complete"

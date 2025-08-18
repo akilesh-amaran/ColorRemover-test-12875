@@ -1,0 +1,10 @@
+# Translation files placeholder
+# These would be compiled Qt translation files (.qm)
+# Generated from .ts files using Qt Linguist tools
+
+# To create actual translation files:
+# 1. Generate .ts files: lupdate ColorRemover.pro
+# 2. Translate in Qt Linguist
+# 3. Compile: lrelease ColorRemover.pro
+
+# For now, the application uses manual translation in code

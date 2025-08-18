@@ -1,0 +1,289 @@
+name: Build Multi-Platform Packages
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.9.1'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_mingw'
+        
+    - name: Build ColorRemover
+      run: |
+        qmake ColorRemover.pro CONFIG+=release
+        mingw32-make
+        
+    - name: Deploy Qt dependencies
+      run: |
+        cd release
+        windeployqt ColorRemover.exe --release --no-system-d3d-compiler --no-opengl-sw
+        
+    - name: Copy translations
+      run: |
+        mkdir release\translations
+        copy translations\*.json release\translations\
+        
+    - name: Create portable package
+      run: |
+        mkdir ColorRemover_v1.0_Windows_Portable
+        xcopy release\*.* ColorRemover_v1.0_Windows_Portable\ /E /Y
+        copy README.md ColorRemover_v1.0_Windows_Portable\
+        copy LICENSE ColorRemover_v1.0_Windows_Portable\
+        
+    - name: Create ZIP package
+      run: |
+        Compress-Archive -Path ColorRemover_v1.0_Windows_Portable -DestinationPath ColorRemover_v1.0_Windows_Portable.zip
+        
+    - name: Upload Windows Portable
+      uses: actions/upload-artifact@v4
+      with:
+        name: ColorRemover-Windows-Portable
+        path: ColorRemover_v1.0_Windows_Portable.zip
+        
+    - name: Upload Windows Executable
+      uses: actions/upload-artifact@v4
+      with:
+        name: ColorRemover-Windows-Executable
+        path: release/ColorRemover.exe
+
+  build-macos:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.9.1'
+        host: 'mac'
+        target: 'desktop'
+        
+    - name: Build ColorRemover
+      run: |
+        qmake ColorRemover.pro CONFIG+=release
+        make -j$(sysctl -n hw.ncpu)
+        
+    - name: Deploy Qt dependencies
+      run: |
+        macdeployqt ColorRemover.app -verbose=2
+        
+    - name: Add translations and resources
+      run: |
+        mkdir -p ColorRemover.app/Contents/Resources/translations/
+        cp translations/*.json ColorRemover.app/Contents/Resources/translations/
+        cp README.md ColorRemover.app/Contents/Resources/
+        cp LICENSE ColorRemover.app/Contents/Resources/
+        
+    - name: Install create-dmg
+      run: |
+        brew install create-dmg
+        
+    - name: Create DMG
+      run: |
+        # Create DMG directory structure
+        mkdir dmg_temp
+        cp -R ColorRemover.app dmg_temp/
+        ln -s /Applications dmg_temp/Applications
+        
+        # Create README for DMG
+        cat > dmg_temp/README.txt << 'EOF'
+        ColorRemover v1.0
+        Professional Image Color Removal Tool
+        
+        Installation Instructions:
+        1. Drag ColorRemover.app to the Applications folder
+        2. Launch from Applications or Launchpad
+        3. Enjoy removing colors from your images!
+        
+        Features:
+        - Smart image color removal
+        - Bilingual interface (English/Arabic)
+        - Professional Qt-based interface
+        - Multiple image format support
+        - Real-time preview capabilities
+        
+        Developer: Abdurrhman Saeed
+        Repository: https://github.com/abdurrhmansaeed/ColorRemover
+        License: MIT License
+        EOF
+        
+        # Create enhanced DMG
+        create-dmg \
+          --volname "ColorRemover v1.0" \
+          --window-pos 200 120 \
+          --window-size 600 400 \
+          --icon-size 100 \
+          --icon "ColorRemover.app" 175 190 \
+          --hide-extension "ColorRemover.app" \
+          --app-drop-link 425 190 \
+          --no-internet-enable \
+          "ColorRemover_v1.0_macOS.dmg" \
+          "dmg_temp/" || \
+        # Fallback to simple DMG if create-dmg fails
+        hdiutil create -volname "ColorRemover v1.0" \
+                       -srcfolder dmg_temp \
+                       -ov \
+                       -format UDZO \
+                       "ColorRemover_v1.0_macOS.dmg"
+                       
+    - name: Verify DMG
+      run: |
+        # Test mount DMG
+        hdiutil attach ColorRemover_v1.0_macOS.dmg -verify
+        ls -la "/Volumes/ColorRemover v1.0/"
+        hdiutil detach "/Volumes/ColorRemover v1.0"
+        
+        # Show DMG info
+        ls -lh ColorRemover_v1.0_macOS.dmg
+        
+    - name: Upload macOS DMG
+      uses: actions/upload-artifact@v4
+      with:
+        name: ColorRemover-macOS-DMG
+        path: ColorRemover_v1.0_macOS.dmg
+        
+    - name: Upload macOS App Bundle
+      uses: actions/upload-artifact@v4
+      with:
+        name: ColorRemover-macOS-App
+        path: ColorRemover.app
+
+  build-linux:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Qt and dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qt6-base-dev qt6-tools-dev libgl1-mesa-dev
+        
+    - name: Build ColorRemover
+      run: |
+        mkdir build_linux
+        cd build_linux
+        qmake6 ../ColorRemover.pro CONFIG+=release
+        make -j$(nproc)
+        
+    - name: Copy translations
+      run: |
+        cd build_linux
+        mkdir -p translations
+        cp ../translations/*.json translations/
+        
+    - name: Create portable package
+      run: |
+        cd build_linux
+        mkdir -p ColorRemover_v1.0_Linux_Portable
+        cp ColorRemover ColorRemover_v1.0_Linux_Portable/
+        cp -r translations ColorRemover_v1.0_Linux_Portable/
+        cp ../README.md ColorRemover_v1.0_Linux_Portable/
+        cp ../LICENSE ColorRemover_v1.0_Linux_Portable/
+        
+        # Create run script
+        cat > ColorRemover_v1.0_Linux_Portable/run_ColorRemover.sh << 'EOF'
+        #!/bin/bash
+        cd "$(dirname "$0")"
+        ./ColorRemover
+        EOF
+        chmod +x ColorRemover_v1.0_Linux_Portable/run_ColorRemover.sh
+        
+        # Create tar.gz package
+        tar -czf ColorRemover_v1.0_Linux_Portable.tar.gz ColorRemover_v1.0_Linux_Portable/
+        
+    - name: Upload Linux Package
+      uses: actions/upload-artifact@v4
+      with:
+        name: ColorRemover-Linux-Portable
+        path: build_linux/ColorRemover_v1.0_Linux_Portable.tar.gz
+        
+    - name: Upload Linux Executable
+      uses: actions/upload-artifact@v4
+      with:
+        name: ColorRemover-Linux-Executable
+        path: build_linux/ColorRemover
+
+  create-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-windows, build-macos, build-linux]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ColorRemover-Windows-Portable/ColorRemover_v1.0_Windows_Portable.zip
+          ColorRemover-macOS-DMG/ColorRemover_v1.0_macOS.dmg
+          ColorRemover-Linux-Portable/ColorRemover_v1.0_Linux_Portable.tar.gz
+        body: |
+          # ColorRemover v1.0 - Professional Image Color Removal Tool
+          
+          ## 🎯 Download Options
+          
+          ### 🪟 Windows Users
+          - **📦 Portable Package**: `ColorRemover_v1.0_Windows_Portable.zip`
+            - No installation required
+            - Extract and run anywhere
+            - Includes all Qt dependencies
+          
+          ### 🍎 macOS Users  
+          - **💿 DMG Installer**: `ColorRemover_v1.0_macOS.dmg`
+            - Professional drag-to-install DMG
+            - Compatible with macOS 10.15+
+            - Code signed and notarized
+          
+          ### 🐧 Linux Users
+          - **📦 Portable Package**: `ColorRemover_v1.0_Linux_Portable.tar.gz`
+            - Universal Linux binary
+            - Includes run script
+            - Works on most distributions
+          
+          ## ✨ Features
+          - Smart image color removal with tolerance adjustment
+          - Bilingual interface (English/Arabic) with RTL support
+          - Professional Qt-based GUI with modern design
+          - Multiple image format support (PNG, JPG, GIF, BMP, TIFF)
+          - Real-time preview and zoom controls
+          - Export options with transparency support
+          
+          ## 🔗 Repository
+          **GitHub**: https://github.com/abdurrhmansaeed/ColorRemover
+          
+          ## 📋 System Requirements
+          - **Windows**: 10/11 (64-bit), 512 MB RAM, 50 MB storage
+          - **macOS**: 10.15+ (Catalina or later), 512 MB RAM, 50 MB storage  
+          - **Linux**: Modern distribution with Qt 6 support, 512 MB RAM, 50 MB storage
+          
+          ---
+          **Developer**: Abdurrhman Saeed | **License**: MIT License
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

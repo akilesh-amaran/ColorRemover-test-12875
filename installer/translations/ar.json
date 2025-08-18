@@ -1,0 +1,76 @@
+{
+  "window": {
+    "title": "مزيل الألوان - محرر الصور"
+  },
+  "groups": {
+    "originalImage": "الصورة الأصلية",
+    "editedImage": "الصورة المحررة",
+    "selectedColors": "الألوان المحددة",
+    "exportOptions": "خيارات التصدير",
+    "zoomControls": "عناصر التحكم في التكبير"
+  },
+  "buttons": {
+    "openImage": "فتح صورة",
+    "saveEditedImage": "حفظ الصورة المحررة",
+    "clearAllColors": "مسح جميع الألوان",
+    "resetZoom": "إعادة تعيين (100%)",
+    "fitToWindow": "ملائمة النافذة"
+  },
+  "checkboxes": {
+    "transparentBackground": "استخدام خلفية شفافة",
+    "exportColorList": "تصدير قائمة الألوان",
+    "useColorTolerance": "تحديد الألوان القريبة"
+  },
+  "labels": {
+    "tolerance": "الألوان القريبة:",
+    "zoom": "تكبير:"
+  },
+  "placeholders": {
+    "originalImageText": "أسقط الصورة هنا أو انقر فتح صورة",
+    "editedImageText": "ستظهر الصورة المُحررة هنا"
+  },
+  "menus": {
+    "file": "&ملف",
+    "language": "&اللغة",
+    "help": "&مساعدة"
+  },
+  "actions": {
+    "about": "&حول...",
+    "openImage": "&فتح صورة...",
+    "saveEditedImage": "&حفظ الصورة المحررة...",
+    "exit": "&خروج"
+  },
+  "about": {
+    "title": "حول التطبيق",
+    "appName": "مزيل الألوان - محرر الصور",
+    "version": "الإصدار",
+    "developer": "المطور",
+    "developerName": "عبد الرحمن بن ناصر السعيد",
+    "description": "الوصف",
+    "descriptionText": "تطبيق لإزالة ألوان محددة من الصور مع دعم الشفافية والتصدير.",
+    "features": "المميزات",
+    "featuresList": [
+      "إزالة ألوان محددة من الصور",
+      "دعم تسامح الألوان",
+      "التكبير والتصغير بالفأرة",
+      "دعم خلفية شفافة",
+      "واجهة متعددة اللغات (عربي/إنجليزي)",
+      "تصدير قائمة الألوان المحذوفة"
+    ],
+    "license": "الترخيص",
+    "licenseText": "مجاني للاستخدام الشخصي"
+  },
+  "messages": {
+    "ready": "جاهز",
+    "errorLoadingImage": "لا يمكن تحميل ملف الصورة.",
+    "success": "نجح",
+    "error": "خطأ",
+    "imageSavedSuccessfully": "لقد حُفظت الصورة :",
+    "failedToSaveImage": "فشل في حفظ الصورة.",
+    "allColorsCleared": "مُسحت الألوان جميعها",
+    "savedImageAndColorList": "حُفظت الصورة وقائمة الألوان",
+    "imageLoaded": "تم التحميل: %1 (%2x%3)",
+    "imageSaved": "تم الحفظ: %1",
+    "colorSelected": "اللون المحدد: RGB(%1, %2, %3) - %4"
+  }
+}

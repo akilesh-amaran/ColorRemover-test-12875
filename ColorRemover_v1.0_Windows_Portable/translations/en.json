@@ -1,0 +1,76 @@
+{
+  "window": {
+    "title": "Color Remover - Image Editor"
+  },
+  "groups": {
+    "originalImage": "Original Image",
+    "editedImage": "Edited Image",
+    "selectedColors": "Selected Colors",
+    "exportOptions": "Export Options",
+    "zoomControls": "Zoom Controls"
+  },
+  "buttons": {
+    "openImage": "Open Image",
+    "saveEditedImage": "Save Edited Image",
+    "clearAllColors": "Clear All Colors",
+    "resetZoom": "Reset (100%)",
+    "fitToWindow": "Fit to Window"
+  },
+  "checkboxes": {
+    "transparentBackground": "Use Transparent Background",
+    "exportColorList": "Export Color List",
+    "useColorTolerance": "Use Color Tolerance"
+  },
+  "labels": {
+    "tolerance": "Tolerance:",
+    "zoom": "Zoom:"
+  },
+  "placeholders": {
+    "originalImageText": "Drop image here or click Open Image",
+    "editedImageText": "Edited image will appear here"
+  },
+  "menus": {
+    "file": "&File",
+    "language": "&Language",
+    "help": "&Help"
+  },
+  "actions": {
+    "about": "&About...",
+    "openImage": "&Open Image...",
+    "saveEditedImage": "&Save Edited Image...",
+    "exit": "E&xit"
+  },
+  "about": {
+    "title": "About",
+    "appName": "Color Remover - Image Editor",
+    "version": "Version",
+    "developer": "Developed by",
+    "developerName": "Abdurrhman Saeed",
+    "description": "Description",
+    "descriptionText": "Application for removing specific colors from images with transparency and export support.",
+    "features": "Features",
+    "featuresList": [
+      "Remove specific colors from images",
+      "Color tolerance support",
+      "Mouse wheel zooming and panning",
+      "Transparent background support",
+      "Multi-language interface (Arabic/English)",
+      "Export removed colors list"
+    ],
+    "license": "License",
+    "licenseText": "Free for personal use"
+  },
+  "messages": {
+    "ready": "Ready",
+    "errorLoadingImage": "Cannot load image file.",
+    "success": "Success",
+    "error": "Error",
+    "imageSavedSuccessfully": "Image saved successfully as:",
+    "failedToSaveImage": "Failed to save image.",
+    "allColorsCleared": "All colors cleared",
+    "savedImageAndColorList": "Saved image and color list",
+    "imageLoaded": "Loaded: %1 (%2x%3)",
+    "imageSaved": "Saved: %1",
+    "colorSelected": "Selected color: RGB(%1, %2, %3) - %4"
+  }
+}
