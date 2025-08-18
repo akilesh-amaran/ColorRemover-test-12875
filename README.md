@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ColorRemover v1.0
 
 A professional Qt-based application for intelligent color removal from images with bilingual support.
@@ -92,7 +91,3 @@ Contributions are welcome! Please feel free to submit pull requests or open issu
 ---
 
 **ColorRemover v1.0** - Professional Image Color Removal Tool
-=======
-# ColorRemover
-Professional Qt-based application for intelligent color removal from images with bilingual support - برنامج مبني بمكتبة Qt لإزالة ألوان محددة من صورة مع دعم لغات متعددة
->>>>>>> 53f85304512c0a58c053597f03ebfd5599a1c357
