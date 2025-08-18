@@ -1,3 +1,4 @@
+for English - [English](README.en.md)
 ![صورة للتطبيق](https://github.com/abdurrhmansaeed/ColorRemover/blob/main/images/ColorRemover_ar.png?raw=true)
 
 # برنامج إزالة الألوان الإصدار 1.0 ColorRemover v1.0
