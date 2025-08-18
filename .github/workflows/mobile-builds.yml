@@ -1,0 +1,106 @@
+name: Mobile Builds
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Install Qt for Android
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.9.1'
+        host: 'linux'
+        target: 'android'
+        arch: 'android_arm64_v8a'
+        
+    - name: Build Android APK
+      run: |
+        export ANDROID_SDK_ROOT=$ANDROID_HOME
+        chmod +x build_android.sh
+        ./build_android.sh
+        
+    - name: Upload Android APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: ColorRemover-Android-APK
+        path: build_android/*.apk
+
+  build-ios:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Qt for iOS
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.9.1'
+        host: 'mac'
+        target: 'ios'
+        
+    - name: Build iOS App
+      run: |
+        chmod +x build_ios.sh
+        ./build_ios.sh
+        
+    - name: Upload iOS App Bundle
+      uses: actions/upload-artifact@v4
+      with:
+        name: ColorRemover-iOS-App
+        path: build_ios/*.app
+
+  create-mobile-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-android, build-ios]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Download Android APK
+      uses: actions/download-artifact@v4
+      with:
+        name: ColorRemover-Android-APK
+        
+    - name: Download iOS App
+      uses: actions/download-artifact@v4
+      with:
+        name: ColorRemover-iOS-App
+        
+    - name: Add to Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          *.apk
+          *.app
+        body: |
+          ## 📱 Mobile Versions Added!
+          
+          ### 🤖 Android
+          - **APK File**: Direct install APK for Android devices
+          - **Requirements**: Android 7.0+ (API 24)
+          
+          ### 🍎 iOS  
+          - **App Bundle**: For development/testing (requires Xcode for installation)
+          - **Requirements**: iOS 12.0+
+          
+          *Note: Official store distribution requires separate store submission process.*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
