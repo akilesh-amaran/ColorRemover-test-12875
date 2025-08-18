@@ -1,0 +1,173 @@
+name: Debug Build Issues
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  debug-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.5.3'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_mingw'
+        
+    - name: Debug Environment
+      shell: cmd
+      run: |
+        echo === Environment Debug ===
+        qmake --version
+        where qmake
+        where mingw32-make
+        echo === Project File Check ===
+        if exist "ColorRemover_simple.pro" (
+          echo ColorRemover_simple.pro found
+          type ColorRemover_simple.pro
+        ) else (
+          echo ColorRemover_simple.pro NOT found
+          echo Available .pro files:
+          dir *.pro
+        )
+        echo === Source Files Check ===
+        if exist "main.cpp" (echo main.cpp found) else (echo main.cpp NOT found)
+        if exist "mainwindow.cpp" (echo mainwindow.cpp found) else (echo mainwindow.cpp NOT found)
+        if exist "mainwindow.h" (echo mainwindow.h found) else (echo mainwindow.h NOT found)
+        
+    - name: Test qmake
+      shell: cmd
+      run: |
+        echo === Testing qmake with minimal project ===
+        qmake ColorRemover_minimal.pro "CONFIG+=release"
+        if exist "Makefile" (
+          echo Minimal project: Makefile generated successfully
+          del Makefile
+        ) else (
+          echo Minimal project: Makefile generation FAILED
+        )
+        echo === Testing qmake with simple project ===
+        qmake ColorRemover_simple.pro "CONFIG+=release"
+        if exist "Makefile" (
+          echo Simple project: Makefile generated successfully
+          echo === Makefile content preview ===
+          type Makefile | findstr /i "SOURCES\|HEADERS\|TARGET"
+        ) else (
+          echo Simple project: Makefile generation FAILED
+          echo Trying original project file...
+          qmake ColorRemover.pro "CONFIG+=release"
+          if exist "Makefile" (
+            echo Original project: Makefile generated successfully
+          ) else (
+            echo All project files failed
+            exit /b 1
+          )
+        )
+        
+    - name: Test compilation
+      shell: cmd
+      run: |
+        echo === Testing compilation ===
+        mingw32-make -j2 2>&1
+        echo === Build result ===
+        if exist "release\ColorRemover.exe" (
+          echo ✅ Build successful
+          dir release\
+        ) else (
+          echo ❌ Build failed
+          if exist "release" (
+            echo Release directory contents:
+            dir release\
+          ) else (
+            echo Release directory does not exist
+          )
+          exit /b 1
+        )
+
+  debug-macos:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.5.3'
+        host: 'mac'
+        target: 'desktop'
+        
+    - name: Debug Environment
+      run: |
+        echo "=== Environment Debug ==="
+        qmake --version
+        which qmake
+        which make
+        echo "=== Project File Check ==="
+        if [ -f "ColorRemover_simple.pro" ]; then
+          echo "ColorRemover_simple.pro found"
+          cat ColorRemover_simple.pro
+        else
+          echo "ColorRemover_simple.pro NOT found"
+          echo "Available .pro files:"
+          ls -la *.pro
+        fi
+        echo "=== Source Files Check ==="
+        [ -f "main.cpp" ] && echo "main.cpp found" || echo "main.cpp NOT found"
+        [ -f "mainwindow.cpp" ] && echo "mainwindow.cpp found" || echo "mainwindow.cpp NOT found"
+        [ -f "mainwindow.h" ] && echo "mainwindow.h found" || echo "mainwindow.h NOT found"
+        
+    - name: Test qmake
+      run: |
+        echo "=== Testing qmake with minimal project ==="
+        qmake ColorRemover_minimal.pro CONFIG+=release
+        if [ -f "Makefile" ]; then
+          echo "Minimal project: Makefile generated successfully"
+          rm Makefile
+        else
+          echo "Minimal project: Makefile generation FAILED"
+        fi
+        echo "=== Testing qmake with simple project ==="
+        qmake ColorRemover_simple.pro CONFIG+=release
+        if [ -f "Makefile" ]; then
+          echo "Simple project: Makefile generated successfully"
+          echo "=== Makefile content preview ==="
+          grep -i "SOURCES\|HEADERS\|TARGET" Makefile || true
+        else
+          echo "Simple project: Makefile generation FAILED"
+          echo "Trying original project file..."
+          qmake ColorRemover.pro CONFIG+=release
+          if [ -f "Makefile" ]; then
+            echo "Original project: Makefile generated successfully"
+          else
+            echo "All project files failed"
+            exit 1
+          fi
+        fi
+        
+    - name: Test compilation
+      run: |
+        echo "=== Testing compilation ==="
+        make -j$(sysctl -n hw.ncpu) 2>&1
+        echo "=== Build result ==="
+        if [ -f "release/ColorRemover" ] || [ -d "ColorRemover.app" ]; then
+          echo "✅ Build successful"
+          ls -la release/ 2>/dev/null || ls -la *.app 2>/dev/null || echo "Output check complete"
+        else
+          echo "❌ Build failed"
+          if [ -d "release" ]; then
+            echo "Release directory contents:"
+            ls -la release/
+          else
+            echo "Release directory does not exist"
+          fi
+          exit 1
+        fi
