@@ -1,0 +1,16 @@
+name: Windows Build test
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.5.3'
+          target: 'desktop'
+      - name: Build
+        run: |
+          qmake ColorRemover.pro
+          mingw32-make -j%NUMBER_OF_PROCESSORS%
