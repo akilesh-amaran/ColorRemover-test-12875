@@ -6,24 +6,11 @@ jobs:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v4
+      - uses: jurplel/install-qt-action@v4
         with:
           version: '6.5.3'
           target: 'desktop'
-          host: 'windows'
-          arch: 'win64_mingw'
-          tools: 'tools_mingw90'
-
-      - name: Set up MinGW
-        uses: egor-tensin/setup-mingw@v2
-        with:
-          platform: x64
-
       - name: Build
-        shell: cmd
         run: |
-          call qtenv2.bat
           qmake ColorRemover.pro
-          mingw32-make
+          mingw32-make -j%NUMBER_OF_PROCESSORS%
