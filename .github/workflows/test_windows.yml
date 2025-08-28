@@ -1,17 +1,10 @@
 name: Windows Build test
 on: [push, pull_request]
-
 jobs:
   build:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Set up MinGW
-        uses: egor-tensin/setup-mingw@v2
-        with:
-          platform: x64
-          
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
@@ -19,7 +12,6 @@ jobs:
           target: 'desktop'
           arch: 'win64_mingw'
           tools: 'tools_mingw90'
-
       - name: Build
         shell: cmd
         run: |
