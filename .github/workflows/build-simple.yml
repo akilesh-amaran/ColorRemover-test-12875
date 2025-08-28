@@ -17,6 +17,7 @@ jobs:
         host: 'windows'
         target: 'desktop'
         arch: 'win64_mingw'
+        tools: 'tools_mingw90'
         cache: true
         
     - name: Build ColorRemover
